@@ -1,0 +1,11 @@
+# Download the video to your server
+yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4" -o "sports_moments.mp4" https://www.youtube.com/watch?v=Dl_HxAPLzu4
+
+# Then, update the video path in your script
+video_file = "sports_moments.mp4"
+
+# In your Python script
+video_url = "https://www.youtube.com/watch?v=Dl_HxAPLzu4"
+
+# ... and pass it to the main function
+main(video_url, output_file)

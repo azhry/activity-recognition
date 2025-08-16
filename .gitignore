@@ -1,2 +1,6 @@
-UCF50
+.DS_Store
+UCF*
 processed_data
+__pycache__
+*.mp4
+*.m4a
