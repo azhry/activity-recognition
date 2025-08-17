@@ -1,6 +1,8 @@
 .DS_Store
 UCF*
 processed_data
+processed_images
 __pycache__
 *.mp4
 *.m4a
+VOC2028
