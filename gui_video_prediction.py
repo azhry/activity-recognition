@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 from ultralytics import YOLO
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import sys
 
 # --- Configuration ---
@@ -14,50 +15,69 @@ IMG_SIZE = 128
 
 def select_video_source():
     """
-    Opens a file dialog to let the user select a video file.
-    Returns the file path or None if the user cancels.
+    Creates a UI dialog to let the user select between a webcam or a video file.
+    Returns the video source (0 for webcam, or a file path) or None if canceled.
     """
-    # Create a hidden Tkinter root window
     root = tk.Tk()
     root.withdraw()
 
-    # Open the file dialog
-    file_path = filedialog.askopenfilename(
-        title="Select a Video File",
-        filetypes=[
-            ("Video files", "*.mp4 *.avi *.mov *.mkv"),
-            ("All files", "*.*")
-        ]
-    )
+    source_choice = None
+
+    def use_webcam():
+        nonlocal source_choice
+        source_choice = 0
+        root.destroy()
+
+    def select_file():
+        nonlocal source_choice
+        file_path = filedialog.askopenfilename(
+            title="Select a Video File",
+            filetypes=[
+                ("Video files", "*.mp4 *.avi *.mov *.mkv"),
+                ("All files", "*.*")
+            ]
+        )
+        if file_path:
+            source_choice = file_path
+        root.destroy()
     
-    # Close the Tkinter window
-    root.destroy()
+    # Create the dialog window
+    dialog_window = tk.Toplevel(root)
+    dialog_window.title("Choose Video Source")
     
-    return file_path
+    # Center the dialog window
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    window_width = 300
+    window_height = 100
+    x_cordinate = int((screen_width / 2) - (window_width / 2))
+    y_cordinate = int((screen_height / 2) - (window_height / 2))
+    dialog_window.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
+
+    label = tk.Label(dialog_window, text="Please choose your video source:", padx=10, pady=10)
+    label.pack()
+
+    webcam_button = tk.Button(dialog_window, text="Use Webcam", command=use_webcam)
+    webcam_button.pack(side=tk.LEFT, padx=10, pady=5)
+
+    file_button = tk.Button(dialog_window, text="Select Video File", command=select_file)
+    file_button.pack(side=tk.RIGHT, padx=10, pady=5)
+    
+    dialog_window.protocol("WM_DELETE_WINDOW", root.destroy)
+    root.mainloop()
+
+    return source_choice
+
+# --- The rest of your main() function is below this line ---
 
 def main():
     """
     Main function to run real-time predictions.
     """
-    # Ask the user to choose between camera and file
-    print("Choose your video source:")
-    print("1. Use webcam")
-    print("2. Select a video file from your computer")
-    
-    choice = input("Enter your choice (1 or 2): ")
-    
-    video_source = None
-    if choice == '1':
-        video_source = 0 # Webcam
-        print("Using webcam...")
-    elif choice == '2':
-        video_source = select_video_source()
-        if not video_source:
-            print("No file selected. Exiting.")
-            sys.exit()
-        print(f"Using video file: {video_source}")
-    else:
-        print("Invalid choice. Exiting.")
+    video_source = select_video_source()
+
+    if video_source is None:
+        print("No video source selected. Exiting.")
         sys.exit()
 
     # Load the models and label mapping
@@ -119,7 +139,7 @@ def main():
 
                 # Display the results
                 label = f"{predicted_class_name}: {confidence:.2f}"
-                color = (0, 255, 0) if "helmet" in predicted_class_name.lower() or "hat" in predicted_class_name.lower() else (0, 0, 255)
+                color = (0, 255, 0) if "helmet" in predicted_class_name.lower() else (0, 0, 255)
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
                 cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
