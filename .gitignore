@@ -6,3 +6,4 @@ __pycache__
 *.mp4
 *.m4a
 VOC2028
+venv
