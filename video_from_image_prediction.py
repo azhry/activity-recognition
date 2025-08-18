@@ -5,7 +5,7 @@ from ultralytics import YOLO
 
 # --- Configuration ---
 # Set the video source. You can use a file path or a webcam index (0 for default webcam)
-VIDEO_SOURCE = "videos_infer/20sec.mp4" # Replace with your video file path or 0 for webcam
+VIDEO_SOURCE = 0 # Replace with your video file path or 0 for webcam
 YOLO_MODEL_PATH = "yolov8n.pt"
 CLASSIFICATION_MODEL_PATH = "helmet_detection_model.h5"
 LABEL_MAPPING_PATH = "image_label_mapping.npy"
