@@ -75,7 +75,7 @@ def main():
 
                 # Display the results
                 label = f"{predicted_class_name}: {confidence:.2f}"
-                color = (0, 255, 0) if "helmet" in predicted_class_name.lower() else (0, 0, 255)
+                color = (0, 255, 0) if "helmet" in predicted_class_name.lower() or "hat" in predicted_class_name.lower() else (0, 0, 255)
 
                 cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
                 cv2.putText(frame, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)

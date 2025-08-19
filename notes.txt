@@ -12,3 +12,10 @@ main(video_url, output_file)
 
 # helmet test data
 https://www.kaggle.com/datasets/ayushraj2349/sample-videos-for-helmet-detection-on-yolov8
+
+pip install pyinstaller
+
+pyinstaller gui_video_prediction.py --onefile --windowed \
+--add-data "helmet_detection_model.h5:." \
+--add-data "image_label_mapping.npy:." \
+--add-data "yolov8n.pt:."
